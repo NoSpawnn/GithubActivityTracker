@@ -1,6 +1,5 @@
 package githubactivitytracker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import githubactivitytracker.lib.GithubClient;
