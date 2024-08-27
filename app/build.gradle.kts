@@ -35,7 +35,7 @@ tasks.jar {
     manifest {
         attributes["Main-Class"] = application.mainClass
         destinationDirectory = file("$rootDir")
-        archiveBaseName = "githubactivitytracker"
+        archiveBaseName = "gat"
     }
 }
 

@@ -1,6 +1,7 @@
 # GithubActivityTracker
 ## Run
-1. Run with gradle
+1. Build with gradle (or download the release .jar)
 ```console
-$ ./gradlew run --args <username>
+$ ./gradlew jar
+$ java -jar gat.jar <username>
 ```
