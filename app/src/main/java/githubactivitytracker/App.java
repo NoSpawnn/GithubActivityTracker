@@ -23,8 +23,11 @@ public class App {
             return;
         }
 
-        for (Event event : events) {
-            System.out.println("- " + event.prettyString());
-        }
+        if (events.isEmpty())
+            System.out.println("User '" + args[0] + "' has no events (or they don't exist!)");
+        else
+            for (Event event : events)
+                System.out.println("- " + event.prettyString());
+
     }
 }
