@@ -3,16 +3,20 @@
     "tasks": [
         {
             "label": "Run",
-            "command": "${workspaceFolder}/gradlew run",
+            "command": "${workspaceFolder}/gradlew run --args ${input:githubUsername}",
             "type": "shell",
             "args": [],
-            "problemMatcher": [
-                "$tsc"
-            ],
             "presentation": {
                 "reveal": "always"
             },
             "group": "build"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "githubUsername",
+            "type": "promptString",
+            "description": "GitHub user to query"
         }
     ]
 }
