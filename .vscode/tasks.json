@@ -2,10 +2,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run",
-            "command": "${workspaceFolder}/gradlew run --args ${input:githubUsername}",
+            "label": "Run CLI",
+            "command": "${workspaceFolder}/gradlew",
             "type": "shell",
-            "args": [],
+            "args": [
+                "run",
+                "--args",
+                "${input:githubUsername}"
+            ],
             "presentation": {
                 "reveal": "always"
             },
