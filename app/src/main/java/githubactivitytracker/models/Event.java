@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,7 +48,13 @@ public record Event(
     }
 
     public String prettyString() {
-        return switch (type) {
+        return prettyString("'at' HH:mm 'on' dd/MM/YYYY");
+    }
+
+    public String prettyString(String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+
+        var s = switch (type) {
             case CommitCommentEvent ->
                 "Commented on a commit in " + repo.name();
             case CreateEvent ->
@@ -84,6 +91,8 @@ public record Event(
                 "Starred " + repo.name();
             default -> "";
         };
+
+        return s + " " + sdf.format(createdAt);
     }
 
     private static String titleString(String s) {
