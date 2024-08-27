@@ -31,6 +31,14 @@ application {
     mainClass = "githubactivitytracker.App"
 }
 
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+        destinationDirectory = file("$rootDir")
+        archiveBaseName = "githubactivitytracker"
+    }
+}
+
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
