@@ -1,4 +1,4 @@
-package gat.models;
+package githubactivitytracker.models;
 
 public enum EventType {
     CommitCommentEvent,

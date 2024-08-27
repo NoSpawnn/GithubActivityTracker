@@ -1,4 +1,4 @@
-package gat.models;
+package githubactivitytracker.models;
 
 import java.text.ParseException;
 import java.time.Instant;

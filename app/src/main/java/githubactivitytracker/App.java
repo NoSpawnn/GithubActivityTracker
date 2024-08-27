@@ -1,9 +1,9 @@
-package gat;
-
-import gat.lib.GithubClient;
-import gat.models.Event;
+package githubactivitytracker;
 
 import java.util.List;
+
+import githubactivitytracker.lib.GithubClient;
+import githubactivitytracker.models.Event;
 
 public class App {
     public static void main(String[] args) {

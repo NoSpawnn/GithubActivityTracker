@@ -1,4 +1,4 @@
-package gat.lib;
+package githubactivitytracker.lib;
 
 import java.net.URI;
 import java.net.http.HttpClient;
