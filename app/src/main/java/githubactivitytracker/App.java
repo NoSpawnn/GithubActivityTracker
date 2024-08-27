@@ -13,11 +13,11 @@ public class App {
             return;
         }
 
-        var s = new GithubClient();
+        var github = new GithubClient();
         List<Event> events;
 
         try {
-            events = Event.listFromJSONArray(s.getEventsForUser(args[0]));
+            events = Event.listFromJSONArray(github.getEventsForUser(args[0]));
         } catch (Exception e) {
             e.printStackTrace();
             return;
