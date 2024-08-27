@@ -1,5 +1,6 @@
 package githubactivitytracker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import githubactivitytracker.lib.GithubClient;
@@ -13,18 +14,19 @@ public class App {
             return;
         }
 
+        var userName = args[0];
         var github = new GithubClient();
         List<Event> events;
 
         try {
-            events = Event.listFromJSONArray(github.getEventsForUser(args[0]));
+            events = Event.listFromJSONArray(github.getEventsForUser(userName));
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
 
         if (events.isEmpty())
-            System.out.println("User '" + args[0] + "' has no events (or they don't exist!)");
+            System.out.println("User '" + userName + "' has no events (or they don't exist!)");
         else
             for (Event event : events)
                 System.out.println("- " + event.prettyString());
