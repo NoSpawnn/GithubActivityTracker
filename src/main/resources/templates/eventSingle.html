@@ -1,0 +1,16 @@
+<style>
+    .eventContainer {
+        display: grid;
+        grid-auto-columns: auto auto;
+    }
+</style>
+
+<div id="eventContainer">
+    <div class="attrGrid">
+        <div class="event-id">{{ id }}</div>
+        <div class="event-type">{{ type }}</div>
+        <div class="event-timestamp">{{ timestamp }}</div>
+        <div class="event-actor"><a href="https://github.com/{{ user }}">{{ user }}</a></div>
+    </div>
+    <button hx-get="/events?user={{ user }}&page={{ page }}" hx-target="#events">Back</button>
+</div>

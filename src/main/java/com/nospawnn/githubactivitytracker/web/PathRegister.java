@@ -20,6 +20,7 @@ public class PathRegister {
 
         webFramework.registerPath(Method.GET, "", p::initialHtml);
         webFramework.registerPath(Method.GET, "events", p::eventsForUser);
+        webFramework.registerPath(Method.GET, "eventsingle", p::singleEventView);
     }
 
 }

@@ -1,5 +1,10 @@
 <tr>
-    <td>{{ id }}</td>
+    <td>
+        <a href="" hx-get="/eventsingle?user={{ user }}&page={{ page }}&id={{ id }}" hx-target="#events"
+            hx-swap="innerhtml">
+            {{ id }}
+        </a>
+    </td>
     <td><a href="https://github.com/{{ repo }}">{{ repo }}</a></td>
     <td>{{ date }}</td>
 </tr>

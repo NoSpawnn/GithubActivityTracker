@@ -14,10 +14,11 @@ import java.util.List;
 
 public class Page {
     private final GithubClient github = new GithubClient();
+    private ConcurrentHashMap<String, ConcurrentHashMap<Integer, List<Event>>> eventsCache = new ConcurrentHashMap<>();
     private String initialHtml;
     private TemplateProcessor eventTableTemplate;
     private TemplateProcessor eventTableRowTemplate;
-    private ConcurrentHashMap<String, ConcurrentHashMap<Integer, List<Event>>> eventsCache = new ConcurrentHashMap<>();
+    private TemplateProcessor eventSingleTemplate;
 
     public Page(FileUtils fileUtils) {
         initialHtml = fileUtils.readTextFile("src/main/resources/templates/index.html");
@@ -25,6 +26,8 @@ public class Page {
                 .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/eventTable.html"));
         eventTableRowTemplate = TemplateProcessor
                 .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/eventTableRow.html"));
+        eventSingleTemplate = TemplateProcessor
+                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/eventSingle.html"));
     }
 
     public IResponse initialHtml(IRequest request) {
@@ -36,6 +39,8 @@ public class Page {
     }
 
     public List<Event> tryGetCachedEvents(String user, int page) {
+        user = user.toLowerCase();
+
         if (!eventsCache.containsKey(user)) {
             // Brand new username
             try {
@@ -66,12 +71,18 @@ public class Page {
         return List.of();
     }
 
-    public String renderEventsTableRowsWith(List<Event> events) {
+    public boolean isHxRequest(IRequest request) {
+        return request.getHeaders().valueByKey("HX-Request") != null;
+    }
+
+    public String renderEventsTableRowsWith(List<Event> events, int page) {
         var sb = new StringBuilder();
 
         events.stream()
                 .map(e -> eventTableRowTemplate.renderTemplate(Map.of(
                         "id", e.id(),
+                        "page", Integer.toString(page),
+                        "user", e.actor().displayLogin(),
                         "repo", e.repo().name(),
                         "date", e.createdAt().toString())))
                 .forEach(sb::append);
@@ -81,7 +92,7 @@ public class Page {
 
     public IResponse eventsForUser(IRequest request) {
         // This request was not sent by HTMX
-        if (request.getHeaders().valueByKey("HX-Request") == null)
+        if (!isHxRequest(request))
             return Response.redirectTo("/");
 
         String renderedEvents = "";
@@ -93,7 +104,7 @@ public class Page {
 
         int page = queryString.get("page") == null ? 1 : Integer.parseInt(queryString.get("page"));
 
-        renderedEvents = renderEventsTableRowsWith(tryGetCachedEvents(user, page));
+        renderedEvents = renderEventsTableRowsWith(tryGetCachedEvents(user, page), page);
 
         if (renderedEvents.isEmpty())
             return noEventsFound(request);
@@ -106,6 +117,34 @@ public class Page {
                         "prevPage", Integer.toString(page <= 1 ? 1 : page - 1),
                         "nextPage", Integer.toString(page + 1),
                         "firstPageBtnDisabled", page <= 1 ? "disabled" : "")));
+    }
+
+    public IResponse singleEventView(IRequest request) {
+        if (!isHxRequest(request))
+            return Response.redirectTo("/");
+
+        Map<String, String> queryString = request.getRequestLine().queryString();
+        String user = queryString.get("user");
+        String pageNo = queryString.get("page");
+        String id = queryString.get("id");
+
+        if (user == null || pageNo == null || id == null)
+            return Response.redirectTo("/");
+
+        var event = eventsCache
+                .get(user.toLowerCase())
+                .get(Integer.parseInt(pageNo))
+                .stream()
+                .filter(e -> e.id().equals(id))
+                .findFirst()
+                .get();
+
+        return Response.htmlOk(eventSingleTemplate.renderTemplate(Map.of(
+                "page", pageNo,
+                "id", event.id(),
+                "type", event.type().toString(),
+                "timestamp", event.createdAt().toString(),
+                "user", event.actor().displayLogin())));
     }
 
 }
