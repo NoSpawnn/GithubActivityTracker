@@ -28,6 +28,10 @@ public class Page {
     }
 
     public IResponse eventsForUser(IRequest request) {
+        // This request was not sent by HTMX
+        if (request.getHeaders().valueByKey("HX-Request") == null)
+            return Response.redirectTo("/");
+
         StringBuilder renderedEvents = new StringBuilder();
         Map<String, String> queryString = request.getRequestLine().queryString();
         String user = queryString.get("user");
