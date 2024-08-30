@@ -65,7 +65,8 @@ public class Page {
                         "user", user,
                         "currentPage", Integer.toString(page),
                         "prevPage", Integer.toString(page <= 1 ? 1 : page - 1),
-                        "nextPage", Integer.toString(page + 1))));
+                        "nextPage", Integer.toString(page + 1),
+                        "firstPageBtnDisabled", page <= 1 ? "disabled" : "")));
     }
 
 }

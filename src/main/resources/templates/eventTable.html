@@ -31,7 +31,7 @@
     </table>
 
     <div class="pageBtns">
-        <button hx-get="/events?user={{ user }}&page={{ prevPage }}" hx-target="#events">&lt;--</button>
+        <button hx-get="/events?user={{ user }}&page={{ prevPage }}" hx-target="#events" {{ firstPageBtnDisabled }}>&lt;--</button>
         <p>{{ currentPage }}</p>
         <button hx-get="/events?user={{ user }}&page={{ nextPage }}" hx-target="#events">--&gt;</button>
     </div>
