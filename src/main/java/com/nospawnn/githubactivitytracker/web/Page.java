@@ -32,7 +32,7 @@ public class Page {
     }
 
     public IResponse noEventsFound(IRequest request) {
-        return Response.htmlOk("<div id=\"events\"><p>That user has no events (or they don't exist!)</p></div>");
+        return Response.htmlOk("<p>That user has no events (or they don't exist!)</p>");
     }
 
     public String renderEventsTableRowsWith(List<Event> events) {
