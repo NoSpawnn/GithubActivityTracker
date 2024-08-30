@@ -27,6 +27,10 @@ public class Page {
         return Response.htmlOk(initialHtml);
     }
 
+    public IResponse noEventsFound(IRequest request) {
+        return Response.htmlOk("<div id=\"events\"><p>That user has no events (or they don't exist!)</p></div>");
+    }
+
     public IResponse eventsForUser(IRequest request) {
         // This request was not sent by HTMX
         if (request.getHeaders().valueByKey("HX-Request") == null)
@@ -37,7 +41,7 @@ public class Page {
         String user = queryString.get("user");
 
         if (user.isBlank())
-            return Response.htmlOk("<div id=\"events\"><p>That user has no events (or they don't exist!)</p></div>");
+            return noEventsFound(request);
 
         int page = queryString.get("page") == null ? 1 : Integer.parseInt(queryString.get("page"));
 
@@ -51,6 +55,9 @@ public class Page {
                     .forEach(renderedEvents::append);
         } catch (ParseException e) {
         }
+
+        if (renderedEvents.isEmpty())
+            return noEventsFound(request);
 
         return Response.htmlOk(eventTableTemplate.renderTemplate(
                 Map.of(
