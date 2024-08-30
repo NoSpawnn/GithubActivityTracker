@@ -1,9 +1,9 @@
 <tr>
     <td>
-        <a href="" hx-get="/eventsingle?user={{ user }}&page={{ page }}&id={{ id }}" hx-target="#events"
-            hx-swap="innerhtml">
-            {{ id }}
-        </a>
+        <button class="btn btn-link p-0 fs-5" hx-get="/eventsingle?user={{ user }}&page={{ page }}&id={{ id }}"
+            hx-target="#events" hx-swap="outerHTML">
+            {{ type }}
+        </button>
     </td>
     <td><a href="https://github.com/{{ repo }}">{{ repo }}</a></td>
     <td>{{ date }}</td>

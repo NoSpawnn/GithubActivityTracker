@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.text.ParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Page {
     private final GithubClient github = new GithubClient();
@@ -81,6 +82,7 @@ public class Page {
         events.stream()
                 .map(e -> eventTableRowTemplate.renderTemplate(Map.of(
                         "id", e.id(),
+                        "type", e.type().toString(),
                         "page", Integer.toString(page),
                         "user", e.actor().displayLogin(),
                         "repo", e.repo().name(),
@@ -119,6 +121,32 @@ public class Page {
                         "firstPageBtnDisabled", page <= 1 ? "disabled" : "")));
     }
 
+    public String eventPayloadHtml(Event e) {
+        var sb = new StringBuilder();
+
+        int i = 0;
+        final int perRow = 3;
+        for (var entry : e.payloadValues().entrySet()) {
+            if (i % perRow == 0)
+                sb.append("<div class=\"row\">");
+
+            sb.append("<div class=\"col mt-3\">");
+            sb.append("<strong>" + entry.getKey() + ":<br></strong>");
+            sb.append(entry.getValue());
+            sb.append("</div>");
+
+            if (i % perRow == perRow - 1)
+                sb.append("</div>");
+
+            i++;
+        }
+
+        if (i % perRow != 0)
+            sb.append("</div>");
+
+        return sb.toString();
+    }
+
     public IResponse singleEventView(IRequest request) {
         if (!isHxRequest(request))
             return Response.redirectTo("/");
@@ -144,7 +172,8 @@ public class Page {
                 "id", event.id(),
                 "type", event.type().toString(),
                 "timestamp", event.createdAt().toString(),
-                "user", event.actor().displayLogin())));
+                "user", event.actor().displayLogin(),
+                "attrs", eventPayloadHtml(event))));
     }
 
 }

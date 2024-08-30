@@ -1,16 +1,29 @@
-<style>
-    .eventContainer {
-        display: grid;
-        grid-auto-columns: auto auto;
-    }
-</style>
-
-<div id="eventContainer">
-    <div class="attrGrid">
-        <div class="event-id">{{ id }}</div>
-        <div class="event-type">{{ type }}</div>
-        <div class="event-timestamp">{{ timestamp }}</div>
-        <div class="event-actor"><a href="https://github.com/{{ user }}">{{ user }}</a></div>
+<div id="event-container" class="fs-4 container text-center justify-content-center align-items-center">
+    <div class="row">
+        <div class="col"><strong>ID:<br></strong>{{ id }}</div>
+        <div class="col"><strong>Type:<br></strong>{{ type }}</div>
     </div>
-    <button hx-get="/events?user={{ user }}&page={{ page }}" hx-target="#events">Back</button>
+    <div class="row">
+        <div class="col mt-3">
+            <strong>Timestamp:<br></strong>{{ timestamp }}
+        </div>
+        <div class="col mt-3">
+            <strong>User:<br></strong>
+            <a href="https://github.com/{{ user }}">
+                {{ user }}
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-auto mt-3 fs-3 fw-bold text-decoration-underline">
+            Details
+        </div>
+    </div>
+    {{ attrs }}
+    <div class="row justify-content-center">
+        <div class="col-auto mt-3">
+            <button class="btn btn-primary fs-4" hx-get="/events?user={{ user }}&page={{ page }}"
+                hx-target="#event-container" hx-swap="outerHTML">Back</button>
+        </div>
+    </div>
 </div>

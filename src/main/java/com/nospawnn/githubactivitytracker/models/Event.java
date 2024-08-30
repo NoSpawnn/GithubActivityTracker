@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,8 +49,7 @@ public record Event(
     }
 
     public String prettyString() {
-
-        var s = switch (type) {
+        return switch (type) {
             case CommitCommentEvent ->
                 "Commented on a commit in " + repo.name();
             case CreateEvent ->
@@ -85,8 +86,16 @@ public record Event(
                 "Starred " + repo.name();
             default -> "";
         };
+    }
 
-        return s;
+    public Map<String, Object> payloadValues() {
+        var fields = new HashMap<String, Object>();
+
+        for (String key : JSONObject.getNames(payload)) {
+            fields.put(key, payload.get(key));
+        }
+
+        return fields;
     }
 
     private static String titleString(String s) {
