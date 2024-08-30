@@ -1,4 +1,4 @@
-package githubactivitytracker.models;
+package com.nospawnn.githubactivitytracker.models;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.SimpleDateFormat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,11 +47,6 @@ public record Event(
     }
 
     public String prettyString() {
-        return prettyString("'at' HH:mm 'on' dd/MM/YYYY");
-    }
-
-    public String prettyString(String dateFormat) {
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
         var s = switch (type) {
             case CommitCommentEvent ->
@@ -92,7 +86,7 @@ public record Event(
             default -> "";
         };
 
-        return s + " " + sdf.format(createdAt);
+        return s;
     }
 
     private static String titleString(String s) {

@@ -1,4 +1,4 @@
-package githubactivitytracker.models;
+package com.nospawnn.githubactivitytracker.models;
 
 import org.json.JSONObject;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package githubactivitytracker.models;
+package com.nospawnn.githubactivitytracker.models;
 
 public enum EventType {
     CommitCommentEvent,

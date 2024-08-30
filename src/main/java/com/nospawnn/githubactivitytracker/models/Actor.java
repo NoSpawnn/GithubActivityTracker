@@ -1,8 +1,9 @@
-package githubactivitytracker.models;
+package com.nospawnn.githubactivitytracker.models;
+
+import org.json.JSONObject;
 
 import java.util.Set;
 
-import org.json.JSONObject;
 
 public record Actor(
         long id,

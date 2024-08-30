@@ -1,0 +1,38 @@
+<style>
+    table {
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #D6EEEE;
+    }
+
+    td {
+        padding: .5rem 1rem;
+    }
+
+    .pageBtns {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+    }
+</style>
+
+<div id="events">
+    <table id="aaa">
+        <tr>
+            <td>ID</td>
+            <td>Repo</td>
+            <td>Date</td>
+        </tr>
+        {{ events }}
+    </table>
+
+    <div class="pageBtns">
+        <button hx-get="/events?user={{ user }}&page={{ prevPage }}" hx-target="#events">&lt;--</button>
+        <p>{{ currentPage }}</p>
+        <button hx-get="/events?user={{ user }}&page={{ nextPage }}" hx-target="#events">--&gt;</button>
+    </div>
+</div>
