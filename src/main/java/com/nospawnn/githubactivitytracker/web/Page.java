@@ -35,6 +35,37 @@ public class Page {
         return Response.htmlOk("<p>That user has no events (or they don't exist!)</p>");
     }
 
+    public List<Event> tryGetCachedEvents(String user, int page) {
+        if (!eventsCache.containsKey(user)) {
+            // Brand new username
+            try {
+                var events = github.getEventsForUser(user, page);
+                var newMap = new ConcurrentHashMap<Integer, List<Event>>();
+                newMap.put(page, events);
+                eventsCache.put(user, newMap);
+                return events;
+            } catch (ParseException e) {
+            }
+        }
+
+        var cachedEvents = eventsCache.get(user);
+        if (!cachedEvents.containsKey(page)) {
+            // Existing user, new page
+            try {
+                var events = github.getEventsForUser(user, page);
+                cachedEvents.put(page, events);
+                return events;
+            } catch (ParseException e) {
+            }
+        } else {
+            // Existing user, existing page
+            return cachedEvents.get(page);
+        }
+
+        // No events found
+        return List.of();
+    }
+
     public String renderEventsTableRowsWith(List<Event> events) {
         var sb = new StringBuilder();
 
@@ -56,38 +87,13 @@ public class Page {
         String renderedEvents = "";
         Map<String, String> queryString = request.getRequestLine().queryString();
         String user = queryString.get("user").toLowerCase();
-        List<Event> events;
 
         if (user.isBlank())
             return noEventsFound(request);
 
         int page = queryString.get("page") == null ? 1 : Integer.parseInt(queryString.get("page"));
 
-        if (eventsCache.containsKey(user)) {
-            var cachedEvents = eventsCache.get(user);
-            if (cachedEvents.containsKey(page)) {
-                // System.out.println("Found existing events: '" + user + "' - page " + page);
-                renderedEvents = renderEventsTableRowsWith(cachedEvents.get(page));
-            } else {
-                // System.out.println("Existing user '" + user + "', no existing events for page " + page);
-                try {
-                    events = github.getEventsForUser(user, page);
-                    cachedEvents.put(page, events);
-                    renderedEvents = renderEventsTableRowsWith(events);
-                } catch (ParseException e) {
-                }
-            }
-        } else {
-            // System.out.println("New user '" + user + "', fetching page " + page + " events");
-            try {
-                events = github.getEventsForUser(user, page);
-                renderedEvents = renderEventsTableRowsWith(events);
-                var newMap = new ConcurrentHashMap<Integer, List<Event>>();
-                newMap.put(page, events);
-                eventsCache.put(user, newMap);
-            } catch (ParseException e) {
-            }
-        }
+        renderedEvents = renderEventsTableRowsWith(tryGetCachedEvents(user, page));
 
         if (renderedEvents.isEmpty())
             return noEventsFound(request);
