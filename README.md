@@ -21,5 +21,8 @@ $ java -jar gat.jar # or gat.jar server
 $ java -jar gat.jar cli <username>
 ```
 
+3. View the web UI
+- Visit http://localhost:8000 or https://localhost:8443 in your browser (or whatever ports you configured if you changed them)
+
 ## Configuration
 - Use the [`minum.config`](./minum.config) file (see [the minum repo](https://github.com/byronka/minum/blob/master/minum.config) for all options)
