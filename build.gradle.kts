@@ -8,7 +8,6 @@ repositories {
 
 dependencies {
     implementation("org.json:json:20240303")
-    implementation("org.json:json:20240303")
     implementation("com.renomad:minum:8.0.1")
 }
 
@@ -26,6 +25,23 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+        attributes["Class-Path"] = configurations
+        archiveBaseName = "gat"
+        destinationDirectory = file("$rootDir")
+    }
+
+    // fat jar
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree)
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 distributions {
