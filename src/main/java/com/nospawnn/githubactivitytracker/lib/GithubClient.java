@@ -8,9 +8,9 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.text.ParseException;
 
-import com.nospawnn.githubactivitytracker.models.Event;
-
 import org.json.JSONArray;
+
+import com.nospawnn.githubactivitytracker.models.Events.Event;
 
 public class GithubClient {
     private static final String EVENTS_URI_FMT = "https://api.github.com/users/%s/events?page=%d&per_page=%d";
