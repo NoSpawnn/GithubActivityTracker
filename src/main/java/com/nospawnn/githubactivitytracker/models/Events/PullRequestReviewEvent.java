@@ -1,22 +1,21 @@
 package com.nospawnn.githubactivitytracker.models.Events;
 
-import java.util.Date;
-
-import org.json.JSONObject;
-
 import com.nospawnn.githubactivitytracker.models.Actor;
 import com.nospawnn.githubactivitytracker.models.EventType;
-import com.nospawnn.githubactivitytracker.models.Repo;
 import com.nospawnn.githubactivitytracker.models.PullRequest;
+import com.nospawnn.githubactivitytracker.models.Repo;
+import org.json.JSONObject;
 
-public class PullRequestEvent extends Event {
+import java.util.Date;
+
+public class PullRequestReviewEvent extends Event {
     String action;
     PullRequest pullRequest;
 
-    public PullRequestEvent(String id, Actor actor, Repo repo, boolean isPublic, Date createdAt, JSONObject payload) {
-        super(id, EventType.PullRequestEvent, actor, repo, isPublic, createdAt);
-        this.action = payload.getString("action");
+    public PullRequestReviewEvent(String id, Actor actor, Repo repo, boolean isPublic, Date createdAt, JSONObject payload) {
+        super(id, EventType.PullRequestReviewEvent, actor, repo, isPublic, createdAt);
         this.pullRequest = PullRequest.fromJSONObject(payload.getJSONObject("pull_request"));
+        this.action = payload.getString("action");
     }
 
     @Override
@@ -24,5 +23,4 @@ public class PullRequestEvent extends Event {
         return "<div class=\"row\"><div class=\"col\"><strong>Action:<br></strong>" + action + "</div>" +
                 "<div class=\"col\"><strong>PR:<br></strong><a href=\"" + pullRequest.url() + "\">#" + pullRequest.number() + "</a></div></div>";
     }
-
 }

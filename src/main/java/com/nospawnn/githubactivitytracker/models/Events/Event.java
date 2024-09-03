@@ -47,27 +47,25 @@ public abstract class Event {
         var type = jo.getEnum(EventType.class, "type");
 
         return switch (type) {
-            case CommitCommentEvent ->
-                new CommitCommentEvent(id, actor, repo, isPublic, createdAt, payload);
-            case IssueCommentEvent ->
-                new IssueCommentEvent(id, actor, repo, isPublic, createdAt, payload);
+            case CommitCommentEvent -> new CommitCommentEvent(id, actor, repo, isPublic, createdAt, payload);
+            case IssueCommentEvent -> new IssueCommentEvent(id, actor, repo, isPublic, createdAt, payload);
             case CreateEvent -> new CreateEvent(id, actor, repo, isPublic, createdAt, payload);
             case DeleteEvent -> new DeleteEvent(id, actor, repo, isPublic, createdAt, payload);
             case ForkEvent -> new ForkEvent(id, actor, repo, isPublic, createdAt, payload.getJSONObject("forkee"));
             case GollumEvent -> new GollumEvent(id, actor, repo, isPublic, createdAt, payload);
             case IssuesEvent -> new IssuesEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case MemberEvent -> new MemberEvent(id, actor, repo, isPublic, createdAt, payload);
+            case MemberEvent -> new MemberEvent(id, actor, repo, isPublic, createdAt, payload);
             case PublicEvent -> new PublicEvent(id, actor, repo, isPublic, createdAt);
             case PullRequestEvent -> new PullRequestEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case PullRequestReviewCommentEvent ->
-            // new PullRequestReviewCommentEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case PullRequestReviewEvent -> new PullRequestReviewEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case PullRequestReviewThreadEvent -> new PullRequestReviewThreadEvent(id, actor, repo, isPublic, createdAt, payload);
+            case PullRequestReviewCommentEvent ->
+                    new PullRequestReviewCommentEvent(id, actor, repo, isPublic, createdAt, payload);
+            case PullRequestReviewEvent -> new PullRequestReviewEvent(id, actor, repo, isPublic, createdAt, payload);
+            case PullRequestReviewThreadEvent ->
+                    new PullRequestReviewThreadEvent(id, actor, repo, isPublic, createdAt, payload);
             case PushEvent -> new PushEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case ReleaseEvent -> new ReleaseEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case SponsorshipEvent -> new SponsorshipEvent(id, actor, repo, isPublic, createdAt, payload);
-            // case WatchEvent -> new WatchEvent(id, actor, repo, isPublic, createdAt, payload);
-            default -> null;
+            case ReleaseEvent -> new ReleaseEvent(id, actor, repo, isPublic, createdAt, payload);
+            case SponsorshipEvent -> new SponsorshipEvent(id, actor, repo, isPublic, createdAt, payload);
+            case WatchEvent -> new WatchEvent(id, actor, repo, isPublic, createdAt, payload);
         };
     }
 

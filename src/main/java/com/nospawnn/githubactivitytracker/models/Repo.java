@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import java.util.Set;
 
 public record Repo(long id, String name, String url) {
-
     private static final Set<String> REQUIRED_JSON_KEYS = Set.of("id", "name", "url");
 
     public static Repo fromJSONObject(final JSONObject jo) {

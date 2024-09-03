@@ -1,21 +1,22 @@
 package com.nospawnn.githubactivitytracker.models.Events;
 
-import java.util.Date;
-
 import com.nospawnn.githubactivitytracker.models.Actor;
 import com.nospawnn.githubactivitytracker.models.EventType;
 import com.nospawnn.githubactivitytracker.models.Repo;
 import org.json.JSONObject;
 
-public class MemberEvent extends Event {
+import java.util.Date;
 
-    public MemberEvent(String id, Actor actor, Repo repo, boolean isPublic, Date createdAt, JSONObject payload) {
-        super(id, EventType.MemberEvent, actor, repo, isPublic, createdAt);
+public class WatchEvent extends Event {
+    String action;
+
+    public WatchEvent(String id, Actor actor, Repo repo, boolean isPublic, Date createdAt, JSONObject payload) {
+        super(id, EventType.WatchEvent, actor, repo, isPublic, createdAt);
+        this.action = payload.getString("action");
     }
 
     @Override
     public String formatEventDetailsHtml() {
         return "";
     }
-
 }
