@@ -10,7 +10,7 @@ public class Web {
 
         new PathRegister(context).registerDomains();
 
-        System.out.printf("\nServer running, access at Access at http://%s:%d or https://%s:%d\n",
+        System.out.printf("\nServer running, access at http://%s:%d or https://%s:%d\n",
                 constants.hostName,
                 constants.serverPort,
                 constants.hostName,
