@@ -14,11 +14,11 @@ import java.util.List;
 
 public class Page {
     private final GithubClient github = new GithubClient();
-    private ConcurrentHashMap<String, ConcurrentHashMap<Integer, List<Event>>> eventsCache = new ConcurrentHashMap<>();
-    private String initialHtml;
-    private TemplateProcessor eventTableTemplate;
-    private TemplateProcessor eventTableRowTemplate;
-    private TemplateProcessor eventSingleTemplate;
+    private final ConcurrentHashMap<String, ConcurrentHashMap<Integer, List<Event>>> eventsCache = new ConcurrentHashMap<>();
+    private final String initialHtml;
+    private final TemplateProcessor eventTableTemplate;
+    private final TemplateProcessor eventTableRowTemplate;
+    private final TemplateProcessor eventSingleTemplate;
 
     public Page(FileUtils fileUtils) {
         initialHtml = fileUtils.readTextFile("src/main/resources/templates/index.html");
