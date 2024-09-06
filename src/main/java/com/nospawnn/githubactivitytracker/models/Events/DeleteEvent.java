@@ -1,12 +1,17 @@
 package com.nospawnn.githubactivitytracker.models.Events;
 
 import java.util.Date;
+import java.util.Map;
 
+import com.renomad.minum.templating.TemplateProcessor;
 import org.json.JSONObject;
 
 import com.nospawnn.githubactivitytracker.models.Actor;
 import com.nospawnn.githubactivitytracker.models.EventType;
 import com.nospawnn.githubactivitytracker.models.Repo;
+
+import static com.nospawnn.githubactivitytracker.web.PathRegister.TEMPLATE_DIR;
+import static com.nospawnn.githubactivitytracker.web.Page.fileUtils;
 
 public class DeleteEvent extends Event {
     String refType;
@@ -14,14 +19,11 @@ public class DeleteEvent extends Event {
     public DeleteEvent(String id, Actor actor, Repo repo, boolean isPublic, Date createdAt, JSONObject payload) {
         super(id, EventType.DeleteEvent, actor, repo, isPublic, createdAt);
         this.refType = payload.getString("ref_type");
+        this.htmlTemplate = TemplateProcessor.buildProcessor(fileUtils.readTextFile(TEMPLATE_DIR + "/events/DeleteEvent.html"));
     }
 
     @Override
     public String formatEventDetailsHtml() {
-        var sb = new StringBuilder();
-
-        sb.append("<div class=\"row\"><div class=\"col\"><strong>Ref Type:<br><strong>" + refType + "</div></div>");
-
-        return sb.toString();
+        return htmlTemplate.renderTemplate(Map.of("refType", refType));
     }
 }

@@ -7,27 +7,26 @@ import com.renomad.minum.web.IRequest;
 import com.renomad.minum.web.IResponse;
 import com.renomad.minum.web.Response;
 import com.renomad.minum.templating.TemplateProcessor;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.text.ParseException;
 import java.util.List;
 
 public class Page {
     private final GithubClient github = new GithubClient();
-    private final ConcurrentHashMap<String, ConcurrentHashMap<Integer, List<Event>>> eventsCache = new ConcurrentHashMap<>();
     private final String initialHtml;
     private final TemplateProcessor eventTableTemplate;
     private final TemplateProcessor eventTableRowTemplate;
     private final TemplateProcessor eventSingleTemplate;
+    public static FileUtils fileUtils;
 
-    public Page(FileUtils fileUtils) {
+    public Page() {
         initialHtml = fileUtils.readTextFile("src/main/resources/templates/index.html");
         eventTableTemplate = TemplateProcessor
-                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/eventTable.html"));
+                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/events/eventTable.html"));
         eventTableRowTemplate = TemplateProcessor
-                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/eventTableRow.html"));
+                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/events/eventTableRow.html"));
         eventSingleTemplate = TemplateProcessor
-                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/eventSingle.html"));
+                .buildProcessor(fileUtils.readTextFile("src/main/resources/templates/events/eventSingle.html"));
     }
 
     public IResponse initialHtml(IRequest request) {
@@ -36,39 +35,6 @@ public class Page {
 
     public IResponse noEventsFound(IRequest request) {
         return Response.htmlOk("<p>That user has no events (or they don't exist!)</p>");
-    }
-
-    public List<Event> tryGetCachedEvents(String user, int page) {
-        user = user.toLowerCase();
-
-        if (!eventsCache.containsKey(user)) {
-            // Brand new username
-            try {
-                var events = github.getEventsForUser(user, page);
-                var newMap = new ConcurrentHashMap<Integer, List<Event>>();
-                newMap.put(page, events);
-                eventsCache.put(user, newMap);
-                return events;
-            } catch (ParseException e) {
-            }
-        }
-
-        var cachedEvents = eventsCache.get(user);
-        if (!cachedEvents.containsKey(page)) {
-            // Existing user, new page
-            try {
-                var events = github.getEventsForUser(user, page);
-                cachedEvents.put(page, events);
-                return events;
-            } catch (ParseException e) {
-            }
-        } else {
-            // Existing user, existing page
-            return cachedEvents.get(page);
-        }
-
-        // No events found
-        return List.of();
     }
 
     public boolean isHxRequest(IRequest request) {
@@ -83,7 +49,7 @@ public class Page {
                         "id", e.getId(),
                         "type", e.getType().toString(),
                         "page", Integer.toString(page),
-                        "user", e.getActor().displayLogin(),
+                        "user", e.getActor().displayLogin().toLowerCase(),
                         "repo", e.getRepo().name(),
                         "date", e.getCreatedAt().toString())))
                 .forEach(sb::append);
@@ -105,7 +71,11 @@ public class Page {
 
         int page = queryString.get("page") == null ? 1 : Integer.parseInt(queryString.get("page"));
 
-        renderedEvents = renderEventsTableRowsWith(tryGetCachedEvents(user, page), page);
+        try {
+            renderedEvents = renderEventsTableRowsWith(github.getEventsForUser(user, page), page);
+        } catch (ParseException e) {
+            renderedEvents = "";
+        }
 
         if (renderedEvents.isEmpty())
             return noEventsFound(request);
@@ -132,13 +102,7 @@ public class Page {
         if (user == null || pageNo == null || id == null)
             return Response.redirectTo("/");
 
-        var event = eventsCache
-                .get(user.toLowerCase())
-                .get(Integer.parseInt(pageNo))
-                .stream()
-                .filter(e -> e.getId().equals(id))
-                .findFirst()
-                .get();
+        var event = github.getSingleEvent(user, id);
 
         return Response.htmlOk(eventSingleTemplate.renderTemplate(Map.of(
                 "page", pageNo,

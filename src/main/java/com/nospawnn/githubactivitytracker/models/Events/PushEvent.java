@@ -1,12 +1,17 @@
 package com.nospawnn.githubactivitytracker.models.Events;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.json.JSONObject;
 
 import com.nospawnn.githubactivitytracker.models.Actor;
 import com.nospawnn.githubactivitytracker.models.EventType;
 import com.nospawnn.githubactivitytracker.models.Repo;
+import com.renomad.minum.templating.TemplateProcessor;
+
+import static com.nospawnn.githubactivitytracker.web.Page.fileUtils;
+import static com.nospawnn.githubactivitytracker.web.PathRegister.TEMPLATE_DIR;
 
 public class PushEvent extends Event {
     int commitCount;
@@ -18,17 +23,16 @@ public class PushEvent extends Event {
         this.commitCount = payload.getInt("size");
         this.distinctCommitCount = payload.getInt("distinct_size");
         this.head = payload.getString("head");
+        this.htmlTemplate = TemplateProcessor.buildProcessor(fileUtils.readTextFile(TEMPLATE_DIR + "/events/PushEvent.html"));
     }
 
     @Override
     public String formatEventDetailsHtml() {
-        var sb = new StringBuilder();
-
-        sb.append("<div class=\"row\"><div class=\"col\"><strong>Commits:<br></strong>" + commitCount + " ("
-                + distinctCommitCount + " distinct)</div>");
-        sb.append("<div class=\"col\"><strong>Head:<br></strong>" + head + "</div></div>");
-
-        return sb.toString();
+        return htmlTemplate.renderTemplate(Map.of(
+            "commitCount", Integer.toString(commitCount),
+            "distinctCommitCount", Integer.toString(distinctCommitCount),
+            "head", head
+        ));
     }
 
 }

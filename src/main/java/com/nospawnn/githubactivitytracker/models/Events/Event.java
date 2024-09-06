@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nospawnn.githubactivitytracker.models.RepoType;
+import com.renomad.minum.templating.TemplateProcessor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,6 +23,7 @@ public abstract class Event {
     Repo repo;
     boolean isPublic;
     Date createdAt;
+    TemplateProcessor htmlTemplate;
 
     private static final Set<String> REQUIRED_JSON_KEYS = Set.of(
             "id", "type", "actor", "repo", "payload", "public", "created_at");
@@ -40,7 +43,7 @@ public abstract class Event {
 
         var id = jo.getString("id");
         var actor = Actor.fromJSONObject(jo.getJSONObject("actor"));
-        var repo = Repo.fromJSONObject(jo.getJSONObject("repo"));
+        var repo = Repo.fromJSONObject(jo.getJSONObject("repo"), RepoType.REPO);
         var isPublic = jo.getBoolean("public");
         var createdAt = Date.from(Instant.parse(jo.getString("created_at"))); // ISO8601 format
         var payload = jo.getJSONObject("payload");

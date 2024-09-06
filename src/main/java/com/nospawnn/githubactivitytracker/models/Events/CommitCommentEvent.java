@@ -1,12 +1,17 @@
 package com.nospawnn.githubactivitytracker.models.Events;
 
 import java.util.Date;
+import java.util.Map;
 
+import com.renomad.minum.templating.TemplateProcessor;
 import org.json.JSONObject;
 
 import com.nospawnn.githubactivitytracker.models.Actor;
 import com.nospawnn.githubactivitytracker.models.EventType;
 import com.nospawnn.githubactivitytracker.models.Repo;
+
+import static com.nospawnn.githubactivitytracker.web.Page.fileUtils;
+import static com.nospawnn.githubactivitytracker.web.PathRegister.TEMPLATE_DIR;
 
 public class CommitCommentEvent extends Event {
     String url;
@@ -14,21 +19,15 @@ public class CommitCommentEvent extends Event {
 
     public CommitCommentEvent(String id, Actor actor, Repo repo, boolean isPublic, Date createdAt, JSONObject payload) {
         super(id, EventType.CommitCommentEvent, actor, repo, isPublic, createdAt);
-        this.url = payload.getString("html_url");
-        this.commitId = payload.getString("commit_id");
+        JSONObject comment = payload.getJSONObject("comment");
+        this.url = comment.getString("html_url");
+        this.commitId = comment.getString("commit_id");
+        this.htmlTemplate = TemplateProcessor.buildProcessor(fileUtils.readTextFile(TEMPLATE_DIR + "/events/CommitCommentEvent.html"));
     }
 
     @Override
     public String formatEventDetailsHtml() {
-        var sb = new StringBuilder();
-
-        sb.append("<div class=\"row mt-3\">");
-        sb.append(
-                "<div class=\"col align\"><strong>Commit:<br></strong><a href=\"" + url + "\">" + commitId
-                        + "</a></div>");
-        sb.append("</div>");
-
-        return sb.toString();
+        return htmlTemplate.renderTemplate(Map.of("url", url, "commitId", commitId));
     }
 
 }

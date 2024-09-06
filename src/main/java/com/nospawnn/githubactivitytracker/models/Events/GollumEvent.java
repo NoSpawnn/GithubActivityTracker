@@ -15,8 +15,7 @@ public class GollumEvent extends Event {
 
     @Override
     public String formatEventDetailsHtml() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'formatEventDetailsHtml'");
+        return "";
     }
 
 }

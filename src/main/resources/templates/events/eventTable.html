@@ -1,9 +1,9 @@
 <div id="events" class="container">
     <table class="table table-borderless table-striped text-center fs-5">
         <thead class="table-bordered fw-bold">
-            <td>Type</td>
-            <td>Repo</td>
-            <td>Date</td>
+        <td>Type</td>
+        <td>Repo</td>
+        <td>Date</td>
         </thead>
         {{ events }}
     </table>
@@ -12,12 +12,13 @@
         <div class="row align-items-center">
             <div class="col">
                 <button class="btn btn-primary fs-4" hx-get="/events?user={{ user }}&page={{ prevPage }}"
-                    hx-target="#events" {{ firstPageBtnDisabled }}>&nbsp;&laquo;&nbsp;</button>
+                        hx-target="#events" {{ firstPageBtnDisabled }}>&nbsp;&laquo;&nbsp;
+                </button>
             </div>
             <div class="col-2 page-link fs-4">{{ currentPage }}</div>
             <div class="col">
                 <button class="btn btn-primary fs-4" hx-get="/events?user={{ user }}&page={{ nextPage }}"
-                    hx-target="#events">
+                        hx-target="#events">
                     &nbsp;&raquo;&nbsp;
                 </button>
             </div>

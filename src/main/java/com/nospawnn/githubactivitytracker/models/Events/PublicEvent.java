@@ -14,7 +14,7 @@ public class PublicEvent extends Event {
 
     @Override
     public String formatEventDetailsHtml() {
-        return ""; // This event has no associated payload
+        return "<p>There isn't much else to say about this one!</p>"; // This event has no associated payload
     }
 
 }
